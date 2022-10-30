@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: org.example.ParametrizedCourierLoginNegativeTests
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 60.553 s <<< FAILURE! - in org.example.ParametrizedCourierLoginNegativeTests
+incorrectCourierLoginTest[0](org.example.ParametrizedCourierLoginNegativeTests)  Time elapsed: 60.285 s  <<< ERROR!
+java.lang.IllegalStateException: 
+Expected response body to be verified as JSON, HTML or XML but no content-type was defined in the response.
+Try registering a default parser using:
+   RestAssured.defaultParser(<parser type>);
+Content was:
+Service unavailable
+
+	at org.example.ParametrizedCourierLoginNegativeTests.incorrectCourierLoginTest(ParametrizedCourierLoginNegativeTests.java:53)
+
