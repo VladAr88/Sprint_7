@@ -5,6 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class TestBase {
 
@@ -43,5 +44,35 @@ public class TestBase {
         for (int i = 0; i < amountOfOrders; i++) {
             createDefaultOrder();
         }
+    }
+
+    public void deleteCourier(Courier courierToDelete) {
+
+        Response response =
+            given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(courierToDelete)
+                .when()
+                .post(baseURI + Constants.loginUrl);
+        String loginResult = response.getBody().asString();
+        String id = returnCourierId(loginResult);
+
+        CourierLoginResponse courierLoginResponse = new CourierLoginResponse();
+        courierLoginResponse.setId(id);
+
+        Response responseToDelete =
+            given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(courierLoginResponse)
+                .when()
+                .delete(baseURI + Constants.deleteCourier + courierLoginResponse.getId());
+        responseToDelete.then().assertThat().statusCode(200);
+    }
+
+    public String returnCourierId(String rawCourierId) {
+        String id = rawCourierId.substring(6);
+        return id.replaceAll("}", "");
     }
 }

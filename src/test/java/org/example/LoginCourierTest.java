@@ -33,6 +33,8 @@ public class LoginCourierTest extends TestBase {
         response.then().assertThat().body("id", notNullValue())
             .and()
             .statusCode(200);
+
+        deleteCourier(courierToLogin);
     }
 
     @Test
@@ -56,6 +58,7 @@ public class LoginCourierTest extends TestBase {
     @Test
     public void checkUnmatchedCredentialsCourierLoginTest() {
         Courier courierToLogin = createDefaultCourier();
+        String initialPassword = courierToLogin.getPassword();
         courierToLogin.setPassword(RandomStringUtils.random(10));
 
         Response response =
@@ -68,5 +71,8 @@ public class LoginCourierTest extends TestBase {
         response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
             .and()
             .statusCode(404);
+
+        courierToLogin.setPassword(initialPassword);
+        deleteCourier(courierToLogin);
     }
 }

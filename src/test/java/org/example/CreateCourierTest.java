@@ -3,8 +3,6 @@ package org.example;
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertTrue;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -15,11 +13,7 @@ import org.junit.Test;
 /**
  * Unit test for simple App.
  */
-public class CreateCourierTest {
-
-    private String createCourierUrl = "/api/v1/courier";
-    private String login = "ninja";
-    private String password = "1234";
+public class CreateCourierTest extends TestBase{
 
     @Before
     public void setUp() {
@@ -35,7 +29,6 @@ public class CreateCourierTest {
         newCourier.setFirstName(RandomStringUtils.random(10));
         newCourier.setLogin(RandomStringUtils.random(10));
         newCourier.setPassword(RandomStringUtils.random(10));
-        boolean result = true;
 
         Response response =
             given()
@@ -43,10 +36,12 @@ public class CreateCourierTest {
                 .and()
                 .body(newCourier)
                 .when()
-                .post(baseURI + createCourierUrl);
+                .post(baseURI + Constants.createCourierUrl);
         response.then().assertThat().body("ok", equalTo(true))
             .and()
             .statusCode(201);
+
+        deleteCourier(newCourier);
     }
 
     @Test
@@ -55,6 +50,7 @@ public class CreateCourierTest {
 
         Courier credentials = new Courier();
         credentials.setLogin(loginDuplicated);
+        String password = "1234";
         credentials.setPassword(password);
 
         Response response =
@@ -63,7 +59,7 @@ public class CreateCourierTest {
                 .and()
                 .body(credentials)
                 .when()
-                .post(baseURI + createCourierUrl);
+                .post(baseURI + Constants.createCourierUrl);
         response.then().statusCode(201);
         response.then().assertThat().body("ok", equalTo(true));
 
@@ -73,12 +69,12 @@ public class CreateCourierTest {
                 .and()
                 .body(credentials)
                 .when()
-                .post(baseURI + createCourierUrl);
+                .post(baseURI + Constants.createCourierUrl);
         secondResponse.then().statusCode(409);
         secondResponse.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
+
+        deleteCourier(credentials);
     }
 
-    public void assertResponse(String methodUrl, String field, String message) {
 
-    }
 }
